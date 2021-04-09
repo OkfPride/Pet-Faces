@@ -6,9 +6,15 @@
 package com.petsfaces.Entity;
 
 import java.time.LocalDateTime;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.Data;
 
@@ -17,19 +23,28 @@ import lombok.Data;
  * @author JavaDev
  */
 @Data
-@Table(name = "comment")
+@Table(name = "comment_table")
 @Entity
 public class Comment {
 
     @Id
+    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
+    @SequenceGenerator(name = "seq",sequenceName = "id_for_comment",initialValue = 1,allocationSize = 1)
     private final long ID;
-
+@Column(nullable = false)
     private String userName;
-    private String caption;
-    private String location;
-    private int likes;
+    
+@Column(nullable = false)
+    private Long userId;
+    
+@Column(nullable =false,columnDefinition = "text")
+    private String message;
+    
+    
+    @Column(updatable = false)
     private LocalDateTime createDateTime;
     
+    @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
     
 

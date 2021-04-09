@@ -9,7 +9,7 @@ package com.petsfaces.Entity.enums;
  *
  * @author JavaDev
  */
-public enum User_Role {
+public enum UserRole {
     ROLE_USER, ROLE_ADMIN
     
 }

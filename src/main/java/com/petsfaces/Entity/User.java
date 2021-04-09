@@ -6,7 +6,7 @@
 package com.petsfaces.Entity;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import com.petsfaces.Entity.enums.User_Role;
+import com.petsfaces.Entity.enums.UserRole;
 import java.time.LocalDateTime;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -36,14 +36,14 @@ import org.springframework.security.core.GrantedAuthority;
  * @author JavaDev
  */
 @Entity
-@Table(name = "user")
+@Table(name = "user_table")
 @Data
 public class User {
     @Column(name = "id")
     @GeneratedValue(generator = "seq",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "seq",sequenceName = "id_for_user")
+    @SequenceGenerator(name = "seq",sequenceName = "id_for_user",allocationSize = 1)
     @Id
-    private final long ID;
+    private  long ID; 
     @Column(name = "username",nullable = false,unique = true, updatable = false)
     private String username;
     @Column(name = "password",length = 3000)
@@ -62,13 +62,14 @@ public class User {
     
     
     
-    @OneToMany(mappedBy = "user",cascade = CascadeType.ALL,fetch = FetchType.LAZY )
+    @OneToMany(mappedBy = "postCreator",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true )
     private List<Post>userPosts= new ArrayList<>();
     
-    @OneToMany(mappedBy = "",cascade = CascadeType.ALL)
-    @ElementCollection(targetClass = User_Role.class)
+  
+    @ElementCollection(targetClass = UserRole.class)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<User_Role>userRole= new HashSet<>();
+    private Set<UserRole>userRole= new HashSet<>();
+    
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
     

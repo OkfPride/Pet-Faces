@@ -10,11 +10,17 @@ import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
+import javax.persistence.Column;
 import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.Lob;
 import javax.persistence.PrePersist;
+import javax.persistence.SequenceGenerator;
 import javax.persistence.Table;
 import lombok.Data;
+import net.minidev.json.annotate.JsonIgnore;
 
 /**
  *
@@ -26,26 +32,16 @@ import lombok.Data;
 public class ImageModel {
 
     @Id
-    private final long ID;
-
+    @GeneratedValue(generator = "seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "seq", allocationSize = 1, initialValue = 1, sequenceName = "id_for_imagege")
+    private  long ID;
+    @Column(nullable = false)
     private String name;
-    private String cation;
-    private String location;
-    private int likes;
+    @JsonIgnore
     private long userId;
-    private long postId;
-    private byte [] imageBytes;
-    
-    List<Post>posts = new ArrayList<>();
-    
-    List<Comment>comments = new ArrayList<>();
-    
-    Set<User>users = new HashSet<>();
-    
-    private LocalDateTime createdDateTime;
-
-    @PrePersist
-    private void onCreate() {
-        this.createdDateTime = LocalDateTime.now();
-    }
+    @JsonIgnore
+    private long postId; 
+    @Lob
+    @Column(columnDefinition = "Bytea")
+    private byte[] imageBytes;
 }
