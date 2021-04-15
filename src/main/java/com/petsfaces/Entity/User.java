@@ -30,6 +30,7 @@ import javax.persistence.Table;
 import javax.persistence.Transient;
 import lombok.Data;
 import org.springframework.security.core.GrantedAuthority;
+import org.springframework.security.core.userdetails.UserDetails;
 
 /**
  *
@@ -38,43 +39,78 @@ import org.springframework.security.core.GrantedAuthority;
 @Entity
 @Table(name = "user_table")
 @Data
-public class User {
+public class User implements UserDetails {
+
+    public User(long ID, String username, String password, String email, Collection<? extends GrantedAuthority> authorities) {
+        this.ID = ID;
+        this.username = username;
+        this.password = password;
+        this.email = email;
+        this.authorities = authorities;
+    }
     @Column(name = "id")
-    @GeneratedValue(generator = "seq",strategy = GenerationType.SEQUENCE)
-    @SequenceGenerator(name = "seq",sequenceName = "id_for_user",allocationSize = 1)
+    @GeneratedValue(generator = "seq", strategy = GenerationType.SEQUENCE)
+    @SequenceGenerator(name = "seq", sequenceName = "id_for_user", allocationSize = 1)
     @Id
-    private  long ID; 
-    @Column(name = "username",nullable = false,unique = true, updatable = false)
+    private long ID;
+    @Column(name = "username", nullable = false, unique = true, updatable = false)
     private String username;
-    @Column(name = "password",length = 3000)
+    @Column(name = "password", length = 3000)
     private String password;
-    @Column(name = "name",nullable = false)
+    @Column(name = "name", nullable = false)
     private String name;
-    @Column(name = "lastname",nullable = false)
+    @Column(name = "lastname", nullable = false)
     private String lastname;
-    @Column(name = "email",unique = true)
+    @Column(name = "email", unique = true)
     private String email;
-    @Column(name = "biograthy",columnDefinition = "text")
+    @Column(name = "biograthy", columnDefinition = "text")
     private String biograthy;
     @Column(name = "created_date", updatable = false)
     @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
-    
-    
-    
-    @OneToMany(mappedBy = "postCreator",cascade = CascadeType.ALL,fetch = FetchType.LAZY,orphanRemoval = true )
-    private List<Post>userPosts= new ArrayList<>();
-    
-  
+
+    @OneToMany(mappedBy = "postCreator", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    private List<Post> userPosts = new ArrayList<>();
+
     @ElementCollection(targetClass = UserRole.class)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<UserRole>userRole= new HashSet<>();
-    
+    private Set<UserRole> userRole = new HashSet<>();
+
     @Transient
     private Collection<? extends GrantedAuthority> authorities;
-    
+
     @PrePersist
-    private void onCreate(){
-        createdDateTime= LocalDateTime.now();
+    private void onCreate() {
+        createdDateTime = LocalDateTime.now();
     }
+
+    /**
+     * Secutiry
+     */
+    @Override
+    public boolean isAccountNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isAccountNonLocked() {
+        return true;
+    }
+
+    @Override
+    public boolean isCredentialsNonExpired() {
+        return true;
+    }
+
+    @Override
+    public boolean isEnabled() {
+        return true;
+    }
+
+    @Override
+    public String getPassword() {
+        return password;
+    }
+
+
 }
