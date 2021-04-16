@@ -29,9 +29,9 @@ import org.springframework.web.filter.OncePerRequestFilter;
 public class JWTAuthenticationFilter extends OncePerRequestFilter {
 
     @Autowired
-    JWTTokenProvider jWTTokenProvider;
+    private JWTTokenProvider jWTTokenProvider;
     @Autowired
-    CustomUserDetailServise customUserDetailServise;
+    private CustomUserDetailServise customUserDetailServise;
 
     Logger logger = LoggerFactory.getLogger(JWTAuthenticationFilter.class);
 
