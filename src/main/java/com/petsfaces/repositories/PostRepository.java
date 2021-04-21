@@ -20,8 +20,8 @@ import org.springframework.stereotype.Repository;
 public interface PostRepository extends JpaRepository<Post, Long> {
 
     List<Post> findAllByUserOrderByCreatedDateDesc(User user);
-
-    List<Post> findAllByOrderbyCreatedDateDesc();
+//
+    List<Post> findAllByOrderByCreatedDateDesc();
 
     Optional<Post> findPostByIdAndUser(Long id, User user);
 }

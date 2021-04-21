@@ -5,6 +5,8 @@
  */
 package com.petsfaces.payload.request;
 
+import com.petsfaces.annotations.PasswordMatches;
+import com.petsfaces.annotations.ValidEmail;
 import javax.validation.constraints.Email;
 import javax.validation.constraints.NotBlank;
 import javax.validation.constraints.NotEmpty;
@@ -16,6 +18,7 @@ import lombok.Data;
  * @author JavaDev
  */
 @Data
+@PasswordMatches
 public class SignUpRequest {
     @Email(message = "must be an email in format ****@***.*** ")
     @NotBlank(message = "Email is required")

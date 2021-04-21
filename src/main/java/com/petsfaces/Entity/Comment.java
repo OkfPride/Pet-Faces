@@ -30,7 +30,7 @@ public class Comment {
     @Id
     @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
     @SequenceGenerator(name = "seq",sequenceName = "id_for_comment",initialValue = 1,allocationSize = 1)
-    private final long ID;
+    private  long id;
 @Column(nullable = false)
     private String userName;
     

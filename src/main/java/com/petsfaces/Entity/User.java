@@ -41,8 +41,11 @@ import org.springframework.security.core.userdetails.UserDetails;
 @Data
 public class User implements UserDetails {
 
+    public User() {
+    }
+
     public User(long ID, String username, String password, String email, Collection<? extends GrantedAuthority> authorities) {
-        this.ID = ID;
+        this.id = ID;
         this.username = username;
         this.password = password;
         this.email = email;
@@ -52,7 +55,7 @@ public class User implements UserDetails {
     @GeneratedValue(generator = "seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "seq", sequenceName = "id_for_user", allocationSize = 1)
     @Id
-    private long ID;
+    private long id;
     @Column(name = "username", nullable = false, unique = true, updatable = false)
     private String username;
     @Column(name = "password", length = 3000)
@@ -69,12 +72,13 @@ public class User implements UserDetails {
     @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
 
-    @OneToMany(mappedBy = "postCreator", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
     private List<Post> userPosts = new ArrayList<>();
 
     @ElementCollection(targetClass = UserRole.class)
     @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
     private Set<UserRole> userRole = new HashSet<>();
+    
 
     @Transient
     private Collection<? extends GrantedAuthority> authorities;

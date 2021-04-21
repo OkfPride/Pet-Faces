@@ -16,7 +16,7 @@ import javax.validation.ConstraintValidatorContext;
  * @author JavaDev
  */
 public class EmailValidator  implements  ConstraintValidator<ValidEmail, String>{
-    private static final String EMAIL_PATTERN = "^[\\w]+@[A-Za-z]*.[A-Za-z]";
+    private static final String EMAIL_PATTERN = "^[\\w]+";
 
     @Override
     public void initialize(ValidEmail constraintAnnotation) {

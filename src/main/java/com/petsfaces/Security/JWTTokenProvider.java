@@ -37,7 +37,7 @@ public class JWTTokenProvider {
         User user = (User) authentication.getPrincipal();
         Date now = new Date(System.currentTimeMillis());
         Date expired = new Date(now.getTime() + SecurityConstants.EXPIRATION_TIME);
-        String userId = Long.toString(user.getID());
+        String userId = Long.toString(user.getId());
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("id", userId);
         claimsMap.put("username", user.getUsername());

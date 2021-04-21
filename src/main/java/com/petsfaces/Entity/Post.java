@@ -38,7 +38,7 @@ public class Post implements Serializable {
     @Id
     @GeneratedValue(generator = "seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "seq", allocationSize = 1, sequenceName = "id_for_post")
-    private  long ID;
+    private  long id;
 
     private String title;
     private String Caption;
@@ -50,16 +50,16 @@ public class Post implements Serializable {
     Set<String> likedUsers = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)
-    User postCreator;
+    User user;
 
     @OneToMany(cascade = CascadeType.REFRESH,fetch = FetchType.EAGER,mappedBy = "post",orphanRemoval = true)
     List<Comment> comments = new ArrayList<>();
 
     @Column(updatable = false)
-    private LocalDateTime creDateTime;
+    private LocalDateTime createdDate;
 
     @PrePersist
     private void onCreate() {
-        this.creDateTime = LocalDateTime.now();
+        this.createdDate = LocalDateTime.now();
     }
 }

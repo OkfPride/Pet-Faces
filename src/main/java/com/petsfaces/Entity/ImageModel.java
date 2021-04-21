@@ -34,7 +34,7 @@ public class ImageModel {
     @Id
     @GeneratedValue(generator = "seq", strategy = GenerationType.SEQUENCE)
     @SequenceGenerator(name = "seq", allocationSize = 1, initialValue = 1, sequenceName = "id_for_imagege")
-    private  long ID;
+    private  long id;
     @Column(nullable = false)
     private String name;
     @JsonIgnore
