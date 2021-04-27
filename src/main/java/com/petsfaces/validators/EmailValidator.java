@@ -16,7 +16,7 @@ import javax.validation.ConstraintValidatorContext;
  * @author JavaDev
  */
 public class EmailValidator  implements  ConstraintValidator<ValidEmail, String>{
-    private static final String EMAIL_PATTERN = "^[\\w]+";
+    private static final String EMAIL_PATTERN = "^[\\w]+@{1}[A-Za-z]+\\.[\\w]+";
 
     @Override
     public void initialize(ValidEmail constraintAnnotation) {
@@ -24,7 +24,7 @@ public class EmailValidator  implements  ConstraintValidator<ValidEmail, String>
 
     @Override
     public boolean isValid(String email, ConstraintValidatorContext cvc) {
-        return validateEmail(email);
+        return (validateEmail(email));
     }
     private boolean validateEmail(String email){
         Pattern pattern = Pattern.compile(EMAIL_PATTERN); // here is regex pattern wich will check input
