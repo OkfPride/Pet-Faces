@@ -28,25 +28,23 @@ import lombok.Data;
 public class Comment {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE,generator = "seq")
-    @SequenceGenerator(name = "seq",sequenceName = "id_for_comment",initialValue = 1,allocationSize = 1)
-    private  long id;
-@Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "seq")
+    @SequenceGenerator(name = "seq", sequenceName = "id_for_comment", initialValue = 1, allocationSize = 1)
+    private long id;
+    @Column(nullable = false)
     private String userName;
-    
-@Column(nullable = false)
+
+    @Column(nullable = false)
     private Long userId;
-    
-@Column(nullable =false,columnDefinition = "text")
+
+    @Column(nullable = false, columnDefinition = "text")
     private String message;
-    
-    
+
     @Column(updatable = false)
     private LocalDateTime createDateTime;
-    
+
     @ManyToOne(fetch = FetchType.EAGER)
     private Post post;
-    
 
     @PrePersist
     private void onCreate() {

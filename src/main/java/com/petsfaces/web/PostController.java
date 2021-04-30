@@ -92,11 +92,5 @@ public class PostController {
 //        List<PostDTO> listPostDTO = postList.stream().map(postFacade::postToPostDTO).collect(Collectors.toList());
         return new ResponseEntity<>(new MessageResponse("post was deleted"), HttpStatus.OK);
     }
-    //deletePost
-//
-//    @GetMapping(path = "/")
-//    public ResponseEntity<PostDTO> getPost() {
-//
-//        return null;
-//    }
+  
 }
