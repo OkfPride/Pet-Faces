@@ -5,27 +5,24 @@
  */
 package com.petsfaces.data_transfer_object;
 
-import javax.persistence.Column;
-import javax.validation.constraints.Email;
-import javax.validation.constraints.NotBlank;
+import java.util.Set;
 import javax.validation.constraints.NotEmpty;
-import javax.validation.constraints.Size;
 import lombok.Data;
 
 /**
- * for transfer not full User from DB -> only needed fields
  *
  * @author JavaDev
  */
 @Data
-public class UserDTO {
+public class PostDTO {
 
     private Long id;
     @NotEmpty
-    private String firstname;
+    private String title;
     @NotEmpty
-    private String lastname;
-    private String bio;
+    private String caprion;
     private String username;
-
+    private String location;
+    private Set<String> likedUsers;
+    private Integer likes;
 }

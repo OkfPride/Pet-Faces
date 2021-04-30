@@ -38,9 +38,9 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     @Override
     protected void doFilterInternal(HttpServletRequest hsreq, HttpServletResponse hsresp, FilterChain fc) throws ServletException, IOException {
         try {
-            String jwtFromRequest = getJWTFromRequest(hsreq);
-            if (StringUtils.hasText(jwtFromRequest)&&jWTTokenProvider.validateToken(jwtFromRequest)) {
-                Long userIdFromToken = jWTTokenProvider.getuserIdFromToken(jwtFromRequest);
+            String jwt = getJWTFromRequest(hsreq);
+            if (StringUtils.hasText(jwt)&&jWTTokenProvider.validateToken(jwt)) {
+                Long userIdFromToken = jWTTokenProvider.getuserIdFromToken(jwt);
                 User loadUserById = customUserDetailServise.loadUserById(userIdFromToken);
                 UsernamePasswordAuthenticationToken authentication = new UsernamePasswordAuthenticationToken(loadUserById, null, Collections.EMPTY_LIST);
                 authentication.setDetails(new WebAuthenticationDetailsSource().buildDetails(hsreq));
@@ -54,7 +54,7 @@ public class JWTAuthenticationFilter extends OncePerRequestFilter {
     }
     
     private String getJWTFromRequest (HttpServletRequest request){
-        String bearToken = request.getHeader(SecurityConstants.TOKEN_PREFIX);
+        String bearToken = request.getHeader(SecurityConstants.HEADER_STRING);
         if (StringUtils.hasText(bearToken)&&bearToken.startsWith(SecurityConstants.TOKEN_PREFIX)) {
             return bearToken.split(" ")[1];
         }

@@ -6,7 +6,7 @@
 package com.petsfaces.servises;
 
 import com.petsfaces.Entity.User;
-import com.petsfaces.UserDataTransferObject.UserDTO;
+import com.petsfaces.data_transfer_object.UserDTO;
 import com.petsfaces.payload.request.SignUpRequest;
 import java.security.Principal;
 
@@ -15,7 +15,12 @@ import java.security.Principal;
  * @author JavaDev
  */
 public interface IUserServise {
+
     public User createUser(SignUpRequest userIn);
+
     public User updateUser(UserDTO user, Principal principal);
+
     public User getUserbyName(Principal principal);
+
+    User getUserById(Long userId);
 }

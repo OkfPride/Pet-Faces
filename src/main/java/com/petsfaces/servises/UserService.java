@@ -7,7 +7,7 @@ package com.petsfaces.servises;
 
 import com.petsfaces.Entity.User;
 import com.petsfaces.Entity.enums.UserRole;
-import com.petsfaces.UserDataTransferObject.UserDTO;
+import com.petsfaces.data_transfer_object.UserDTO;
 import com.petsfaces.exceptions.UserExistExseption;
 import com.petsfaces.payload.request.SignUpRequest;
 import com.petsfaces.repositories.UserRepository;
@@ -59,21 +59,29 @@ public class UserService implements IUserServise {
     public User updateUser(UserDTO user, Principal principal) {
         User userByName = getUserByName(principal);
         userByName.setBiograthy(user.getBio());
-        userByName.setLastname(user.getLastName());
-        userByName.setName(user.getFirstName());
+        userByName.setLastname(user.getLastname());
+        userByName.setName(user.getFirstname());
         return userRepository.save(userByName);
     }
+
     @Override
-    public User getUserbyName(Principal principal){
+    public User getUserbyName(Principal principal) {
         return getUserByName(principal);
     }
-    
-    private User getUserByName(Principal principal){
+
+    public User getUserById(Long userId) {
+        return userRepository.findUserById(userId).orElseThrow(() -> {
+            return new IllegalArgumentException("cant find user with id = " + userId);
+        });
+    }
+
+    private User getUserByName(Principal principal) {
         String username = principal.getName();
         User user = userRepository.findUserByUsername(username).orElseThrow(() -> {
-            return new UsernameNotFoundException("cant find user with username = "+ username); //To change body of generated lambdas, choose Tools | Templates.
+            return new UsernameNotFoundException("cant find user with username = " + username); //To change body of generated lambdas, choose Tools | Templates.
         });
         return user;
     }
+    
 
 }

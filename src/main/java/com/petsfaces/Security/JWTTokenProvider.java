@@ -40,10 +40,16 @@ public class JWTTokenProvider {
         String userId = Long.toString(user.getId());
         Map<String, Object> claimsMap = new HashMap<>();
         claimsMap.put("id", userId);
-        claimsMap.put("username", user.getUsername());
+        claimsMap.put("username", user.getEmail());
         claimsMap.put("firstname", user.getName());
         claimsMap.put("lastname", user.getLastname());
-        return Jwts.builder().setSubject(userId).addClaims(claimsMap).setIssuedAt(now).setExpiration(expired).signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET).compact();
+        return Jwts.builder().
+                setSubject(userId).
+                addClaims(claimsMap).
+                setIssuedAt(now).
+                setExpiration(expired).
+                signWith(SignatureAlgorithm.HS512, SecurityConstants.SECRET).
+                compact();
     }
 
     public boolean validateToken(String Token) {
