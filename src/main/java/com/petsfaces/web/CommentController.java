@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import com.petsfaces.data_transfer_object.CommentDTO;
+import com.petsfaces.exceptions.CommentNotFoundException;
 import com.petsfaces.facade.CommentFacade;
 import com.petsfaces.servises.ICommentService;
 import com.petsfaces.validators.ResponseErrorValidation;
@@ -27,6 +28,10 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.util.ObjectUtils;
 import org.springframework.validation.BindingResult;
 import org.springframework.web.bind.annotation.RequestBody;
+import com.petsfaces.payload.response.MessageResponse;
+import java.util.List;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 
 /**
  *
@@ -40,6 +45,7 @@ public class CommentController {
     Logger logger = LoggerFactory.getLogger(CommentController.class);
 
     ICommentService commentService;
+
     ResponseErrorValidation responseErrorValidation;
     CommentFacade commentFacade;
 
@@ -56,16 +62,30 @@ public class CommentController {
         if (!ObjectUtils.isEmpty(errors)) {
             return errors;
         }
-        Comment createComment = commentService.createComment(commentDTO, principal);
+
+        Comment createComment = commentService.createComment(commentDTO, principal, postId);
         CommentDTO commenttoCommentDTO = commentFacade.commenttoCommentDTO(createComment);
         return new ResponseEntity<>(commenttoCommentDTO, HttpStatus.OK);
     }
 
-    @PostMapping(path = "/{postid}/delete")
-    public void deleteComment() {
+    @PostMapping(path = "/{commentId}/delete")
+    public ResponseEntity<MessageResponse> deleteComment(@PathVariable(value = "commentId") Long postId, Principal principal) {
+        try {
+
+            commentService.deleteComment(principal, postId);
+            return new ResponseEntity<>(new MessageResponse("comment deleted"), HttpStatus.OK);
+        } catch (CommentNotFoundException e) {
+            logger.info("comment not found here {}"+e.getStackTrace());
+            return new ResponseEntity<>(new MessageResponse("OOps"), HttpStatus.BAD_REQUEST);
+        }
     }
 
     @GetMapping(path = "/{postid}/all")
-    public void getAllCommentsToPost() {
+    public ResponseEntity<List<CommentDTO>> getAllCommentsToPost(@PathVariable(value = "postid") Long postId) {
+        List<Comment> listOfComments = commentService.getAllCommentsToPost(postId);
+        List<CommentDTO> collect = listOfComments.stream().map((t) -> {
+            return commentFacade.commenttoCommentDTO(t); 
+        }).collect(Collectors.toList());
+        return new ResponseEntity<>(collect, HttpStatus.OK);
     }
 }

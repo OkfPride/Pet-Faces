@@ -8,6 +8,7 @@ package com.petsfaces.servises;
 import com.petsfaces.data_transfer_object.CommentDTO;
 import com.petsfaces.Entity.Comment;
 import java.security.Principal;
+import java.util.List;
 
 /**
  *
@@ -15,5 +16,9 @@ import java.security.Principal;
  */
 public interface ICommentService {
 
-    public Comment createComment(CommentDTO commentDTO,Principal principal);
+    public Comment createComment(CommentDTO commentDTO,Principal principal, Long postId);
+
+    public void deleteComment(Principal principal, Long postId);
+
+    public List<Comment> getAllCommentsToPost(Long postId);
 }

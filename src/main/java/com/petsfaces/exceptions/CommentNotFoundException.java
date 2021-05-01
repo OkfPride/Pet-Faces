@@ -13,17 +13,17 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author JavaDev
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class PostNotFoundException extends RuntimeException {
+public class CommentNotFoundException extends RuntimeException {
 
-    private static final String  defString= "def string";
+    private static final String defMessage = "its a default message";
 
-    public PostNotFoundException(String message) {
+    public CommentNotFoundException(String message) {
         super(message);
+
     }
 
-    public PostNotFoundException() {
-        super(defString);
+    public CommentNotFoundException() {
+        super(defMessage);
     }
-    
 
 }

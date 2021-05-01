@@ -5,6 +5,7 @@
  */
 package com.petsfaces.data_transfer_object;
 
+import java.util.List;
 import java.util.Set;
 import javax.validation.constraints.NotEmpty;
 import lombok.Data;
@@ -24,5 +25,6 @@ public class PostDTO {
     private String username;
     private String location;
     private Set<String> likedUsers;
+    private List<String> comments;
     private Integer likes;
 }
