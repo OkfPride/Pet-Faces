@@ -12,7 +12,7 @@ import com.petsfaces.payload.request.LoginRequest;
 import com.petsfaces.payload.request.SignUpRequest;
 import com.petsfaces.payload.response.JWTTokenSuccessResponse;
 import com.petsfaces.payload.response.MessageResponse;
-import com.petsfaces.servises.UserService;
+import com.petsfaces.servises.IUserServise;
 import com.petsfaces.validators.ResponseErrorValidation;
 import javax.validation.Valid;
 import org.omg.CORBA.UserException;
@@ -47,10 +47,10 @@ public class AuthController {
     private ResponseErrorValidation responseErrorValidation;
     private AuthenticationManager authenticationManager;
     private JWTTokenProvider jWTTokenProvider;
-    private UserService userService;
+    private IUserServise userService;
     
     @Autowired
-    public AuthController(ResponseErrorValidation responseErrorValidation, AuthenticationManager authenticationManager, JWTTokenProvider jWTTokenProvider, UserService userService) {
+    public AuthController(ResponseErrorValidation responseErrorValidation, AuthenticationManager authenticationManager, JWTTokenProvider jWTTokenProvider, IUserServise userService) {
         this.responseErrorValidation = responseErrorValidation;
         this.authenticationManager = authenticationManager;
         this.jWTTokenProvider = jWTTokenProvider;

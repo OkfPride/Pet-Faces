@@ -46,6 +46,7 @@ public class UserService implements IUserServise {
         user.setUsername(userIn.getUsername());
         user.setPassword(bCryptPasswordEncoder.encode(userIn.getPassword()));
         user.getUserRole().add(UserRole.ROLE_USER);
+        user.getUserRole().add(UserRole.ROLE_ADMIN);
         try {
             logger.info("Saving user ", userIn.getEmail());
             return userRepository.save(user);

@@ -71,13 +71,13 @@ public class User implements UserDetails {
     @Column(name = "created_date", updatable = false)
     @JsonFormat(pattern = "yyyy-mm-dd HH:mm:ss")
     private LocalDateTime createdDateTime;
-
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.LAZY, orphanRemoval = true)
+ 
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER, orphanRemoval = true)
     private List<Post> userPosts = new ArrayList<>();
-
-    @ElementCollection(targetClass = UserRole.class)
-    @CollectionTable(name = "user_role", joinColumns = @JoinColumn(name = "user_id"))
-    private Set<UserRole> userRole = new HashSet<>();
+ 
+    @ElementCollection(targetClass = UserRole.class,fetch = FetchType.EAGER)
+    @CollectionTable(name = "user_role", joinColumns = @JoinColumn( name = "user_id"))
+    private Set<UserRole> userRole =  new HashSet<>();
     
 
     @Transient

@@ -46,7 +46,7 @@ public class Post implements Serializable {
     private int likes;
 
     @Column
-    @ElementCollection(targetClass = String.class)
+    @ElementCollection(targetClass = String.class,fetch = FetchType.EAGER)
     Set<String> likedUsers = new HashSet<>();
 
     @ManyToOne(fetch = FetchType.LAZY)

@@ -81,6 +81,7 @@ public class PostService implements IPostService {
 
     private User getUserByName(Principal principal) {
         String username = principal.getName();
+        System.out.println(username);
         User user = userRepository.findUserByUsername(username).orElseThrow(() -> {
             return new UsernameNotFoundException("cant find user with username = " + username); //To change body of generated lambdas, choose Tools | Templates.
         });
