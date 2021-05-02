@@ -32,6 +32,8 @@ import com.petsfaces.payload.response.MessageResponse;
 import java.util.List;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
+import org.springframework.beans.factory.annotation.Value;
+import org.springframework.context.annotation.PropertySource;
 
 /**
  *
@@ -40,6 +42,7 @@ import java.util.stream.Stream;
 @CrossOrigin
 @RequestMapping(path = "/api/comment")
 @RestController
+@PropertySource("classpath:myvalues.properties")
 public class CommentController {
 
     Logger logger = LoggerFactory.getLogger(CommentController.class);
@@ -75,16 +78,17 @@ public class CommentController {
             commentService.deleteComment(principal, postId);
             return new ResponseEntity<>(new MessageResponse("comment deleted"), HttpStatus.OK);
         } catch (CommentNotFoundException e) {
-            logger.info("comment not found here {}"+e.getStackTrace());
+            logger.info("comment not found here {}" + e.getStackTrace());
             return new ResponseEntity<>(new MessageResponse("OOps"), HttpStatus.BAD_REQUEST);
         }
     }
+
 
     @GetMapping(path = "/{postid}/all")
     public ResponseEntity<List<CommentDTO>> getAllCommentsToPost(@PathVariable(value = "postid") Long postId) {
         List<Comment> listOfComments = commentService.getAllCommentsToPost(postId);
         List<CommentDTO> collect = listOfComments.stream().map((t) -> {
-            return commentFacade.commenttoCommentDTO(t); 
+            return commentFacade.commenttoCommentDTO(t);
         }).collect(Collectors.toList());
         return new ResponseEntity<>(collect, HttpStatus.OK);
     }

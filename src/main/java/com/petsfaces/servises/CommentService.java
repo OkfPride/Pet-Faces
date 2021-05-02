@@ -15,7 +15,10 @@ import com.petsfaces.repositories.CommentRepository;
 import com.petsfaces.repositories.PostRepository;
 import com.petsfaces.repositories.UserRepository;
 import java.security.Principal;
+import java.util.Arrays;
 import java.util.List;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.stereotype.Service;
@@ -30,6 +33,7 @@ public class CommentService implements ICommentService {
     CommentRepository commentRepository;
     UserRepository userRepository;
     PostRepository postRepository;
+    Logger logger = LoggerFactory.getLogger(CommentService.class);
 
     @Autowired
     public CommentService(CommentRepository commentRepository, UserRepository userRepository, PostRepository postRepository) {
@@ -66,8 +70,18 @@ public class CommentService implements ICommentService {
 
     @Override
     public List<Comment> getAllCommentsToPost(Long postId) {
-        Post post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
-        List<Comment> findAllByPost = commentRepository.findAllByPost(post);
+        List<Comment> findAllByPost = null;
+        Post post = null;
+        try {
+            post = postRepository.findById(postId).orElseThrow(PostNotFoundException::new);
+
+        } catch (PostNotFoundException e) {
+            StackTraceElement[] stackTrace = e.getStackTrace();
+            String toString = Arrays.toString(stackTrace);
+            
+            logger.warn(toString);
+        }
+        findAllByPost = commentRepository.findAllByPost(post);
         return findAllByPost;
     }
 
