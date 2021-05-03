@@ -13,7 +13,13 @@ import org.springframework.web.bind.annotation.ResponseStatus;
  * @author JavaDev
  */
 @ResponseStatus(HttpStatus.BAD_REQUEST)
-public class UserExistExseption extends RuntimeException{
+public class UserExistExseption extends RuntimeException {
+
+    private static final String message="user not found ";
+
+    public UserExistExseption() {
+        super(message);
+    }
 
     public UserExistExseption(String message) {
         super(message);

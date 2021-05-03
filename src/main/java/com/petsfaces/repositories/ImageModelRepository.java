@@ -6,9 +6,11 @@
 package com.petsfaces.repositories;
 
 import com.petsfaces.Entity.ImageModel;
+import java.security.Principal;
 import java.util.Optional;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.stereotype.Repository;
+import org.springframework.web.multipart.MultipartFile;
 
 /**
  *
@@ -19,4 +21,5 @@ public interface ImageModelRepository extends JpaRepository<ImageModel, Long>{
     Optional<ImageModel>findById(Long id);
     Optional<ImageModel>findByUserId(Long id);
     Optional<ImageModel>findByPostId(Long id);
+
 }
