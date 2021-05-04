@@ -41,7 +41,7 @@ public class ImageModel {
     private long userId;
     @JsonIgnore 
     private long postId ; 
-//    @Lob
+    @Lob
     @Column(columnDefinition = "Bytea")
     private byte[]  imageBytes;
 }

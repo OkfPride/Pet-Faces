@@ -22,6 +22,7 @@ import java.security.Principal;
 import java.util.Arrays;
 import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collector;
 import java.util.stream.Collectors;
 import java.util.stream.Stream;
 import java.util.zip.DataFormatException;
@@ -62,15 +63,20 @@ public class ImageService implements I_ImageService {
     @Override
     public ImageModel uploadImage(MultipartFile file, Principal principal) throws IOException {
         User user = getUserByName(principal);
+            logger.info("user = "+user.getId());
         ImageModel imageModel = imageModelRepository.findByUserId(user.getId()).orElse(null);
+            logger.info("imageModel  = "+imageModel);
         if (!ObjectUtils.isEmpty(imageModel)) {
+            System.out.println("check0");
             imageModelRepository.delete(imageModel);
         } 
+        logger.info("checkpoint0.5");
         ImageModel createdImageModel = new ImageModel();
         createdImageModel.setUserId(user.getId());
         createdImageModel.setName(file.getOriginalFilename());
         byte[] coded = compressBytes(file.getBytes());
         createdImageModel.setImageBytes(coded);
+        logger.info("checkpoint1");
         return imageModelRepository.save(createdImageModel);
         
     }
@@ -79,27 +85,17 @@ public class ImageService implements I_ImageService {
     public ImageModel uploadImageToPost(Long postId, Principal principal, MultipartFile file) throws IOException {
         User user = getUserByName(principal);
         Post post = user.getUserPosts().stream().filter((Post t) -> {
-            if (Long.compare(t.getId(), postId) == 0) {
-
-                return true;
-            } else {
-                return false;
-            }
-        }).collect(Collectors.collectingAndThen(Collectors.toList(), (List<Post> t) -> {
-            if (t.size() != 1) {
-                throw new IllegalStateException();
-            }
-            return t.get(0);
-        }));
+            if (Long.compare(t.getId(), postId) == 0) { return true;} 
+            else {return false;   }
+        }).collect(getCollector());
+        
         ImageModel createdImageModel = new ImageModel();
-        createdImageModel.setUserId(user.getId());
+        
+        createdImageModel.setPostId(post.getId());
         createdImageModel.setName(file.getOriginalFilename());
         byte[] compressBytes = compressBytes(file.getBytes());
         createdImageModel.setImageBytes(compressBytes);
-        System.out.println("===============================");
         return imageModelRepository.save(createdImageModel);
-//        imageRepositoryDAO.save(createdImageModel);
-//        return createdImageModel;
     }
 
     @Override
@@ -114,10 +110,12 @@ public class ImageService implements I_ImageService {
     }
 
     @Override
-    public ImageModel getImageFromPost(Long postId) {
-        ImageModel imageModel = imageModelRepository.findByPostId(postId).orElseThrow(ImageNotFoundException::new);
-        if (ObjectUtils.isEmpty(imageModel)) {
-            imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
+    public List<ImageModel> getImageFromPost(Long postId) {
+        List<ImageModel> imageModel = imageModelRepository.findAllByPostId(postId).orElse(null);
+        if (!ObjectUtils.isEmpty(imageModel)) {
+            imageModel.stream().forEach((t) -> {
+            t.setImageBytes(decompressBytes(t.getImageBytes()));
+            });
         }
         return imageModel;
     }
@@ -164,6 +162,14 @@ public class ImageService implements I_ImageService {
 //            logger.warn(Arrays.toString(ex.getStackTrace()));
             return buffer;
         }
+    }
+    private <T>Collector<T,?,T> getCollector(){
+        return Collectors.collectingAndThen(Collectors.toList(), ( List<T> t) -> {
+            if (t.size() != 1) {
+                throw new IllegalStateException();
+            }
+            return t.get(0);
+        });
     }
 
 }

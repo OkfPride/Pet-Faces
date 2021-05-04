@@ -8,6 +8,7 @@ package com.petsfaces.servises;
 import com.petsfaces.Entity.ImageModel;
 import java.io.IOException;
 import java.security.Principal;
+import java.util.List;
 import org.springframework.web.multipart.MultipartFile;
 
 /**
@@ -22,6 +23,6 @@ public interface I_ImageService {
 
     public ImageModel getImageFromProfile(Principal principal);
 
-    public ImageModel getImageFromPost(Long postId);
+    public List<ImageModel> getImageFromPost(Long postId);
     
 }

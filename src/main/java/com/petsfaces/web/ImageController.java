@@ -23,6 +23,7 @@ import org.springframework.http.HttpStatus;
 import com.petsfaces.servises.I_ImageService;
 import com.petsfaces.Entity.ImageModel;
 import java.io.IOException;
+import java.util.List;
 import java.util.logging.Level;
 import java.util.logging.Logger;
 
@@ -43,7 +44,7 @@ public class ImageController {
     }
 
     @PostMapping(value = "/upload")
-    public ResponseEntity<MessageResponse> uploadImageToUser(@RequestParam(name = "fileName") MultipartFile file, Principal principal) {
+    public ResponseEntity<MessageResponse> uploadImageToUser(@RequestParam(name = "file") MultipartFile file, Principal principal) {
         try {
             imageService.uploadImage(file, principal);
         } catch (IOException ex) {
@@ -70,9 +71,9 @@ public class ImageController {
     }
 
     @GetMapping(value = "/{postId}/upload")
-    public ResponseEntity<ImageModel> getImageToPost(@PathVariable Long postId) {
-        ImageModel imageModel = imageService.getImageFromPost(postId);
-        return new ResponseEntity<>(imageModel, HttpStatus.OK);
+    public ResponseEntity<List<ImageModel>> getImageToPost(@PathVariable Long postId) {
+        List<ImageModel> imageModels= imageService.getImageFromPost(postId);
+        return new ResponseEntity<>(imageModels, HttpStatus.OK);
     }
 
 }
