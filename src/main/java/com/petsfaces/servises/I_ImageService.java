@@ -18,7 +18,7 @@ public interface I_ImageService {
 
     public ImageModel uploadImage (MultipartFile file, Principal principal) throws IOException ;
 
-    public ImageModel uploadImageToPost(Long postId, Principal principal, MultipartFile file);
+    public ImageModel uploadImageToPost(Long postId, Principal principal, MultipartFile file)throws IOException ;
 
     public ImageModel getImageFromProfile(Principal principal);
 

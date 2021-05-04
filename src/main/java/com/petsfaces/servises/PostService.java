@@ -16,6 +16,7 @@ import com.petsfaces.data_transfer_object.PostDTO;
 import com.petsfaces.exceptions.PostNotFoundException;
 import com.petsfaces.repositories.UserRepository;
 import java.security.Principal;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -116,9 +117,12 @@ public class PostService implements IPostService {
         Post post = postRepository.findById(postId).orElseThrow(() -> {
             return new PostNotFoundException("no post with id = "+ postId); //To change body of generated lambdas, choose Tools | Templates.
         });
+        HashSet<Post> hashSet = new HashSet<>(posts);
+        if (hashSet.contains(post)) {
+        postRepository.delete(post);
+        }else{throw  new IllegalAccessError("no acces to post "+ postId);}
 //        posts.remove(post);
 //        userRepository.save(user);
-        postRepository.delete(post);
     }
     
 

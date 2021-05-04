@@ -6,9 +6,13 @@
 package com.petsfaces.servises;
 
 import com.petsfaces.Entity.ImageModel;
+import com.petsfaces.Entity.Post;
 import com.petsfaces.repositories.ImageModelRepository;
 import com.petsfaces.Entity.User;
+import com.petsfaces.exceptions.ImageNotFoundException;
+import com.petsfaces.exceptions.PostNotFoundException;
 import com.petsfaces.exceptions.UserExistExseption;
+import com.petsfaces.repositories.ImageRepositoryDAO;
 import com.petsfaces.repositories.PostRepository;
 import com.petsfaces.repositories.UserRepository;
 import java.io.ByteArrayOutputStream;
@@ -16,7 +20,10 @@ import java.io.IOException;
 import java.nio.ByteBuffer;
 import java.security.Principal;
 import java.util.Arrays;
+import java.util.List;
 import java.util.logging.Level;
+import java.util.stream.Collectors;
+import java.util.stream.Stream;
 import java.util.zip.DataFormatException;
 import java.util.zip.Deflater;
 import java.util.zip.Inflater;
@@ -42,6 +49,8 @@ public class ImageService implements I_ImageService {
     UserRepository userRepository;
     PostRepository postRepository;
     Logger logger = LoggerFactory.getLogger(ImageService.class);
+    @Autowired
+    ImageRepositoryDAO imageRepositoryDAO;
 
     @Autowired
     public ImageService(ImageModelRepository imageModelRepository, UserRepository userRepository, PostRepository postRepository) {
@@ -53,20 +62,44 @@ public class ImageService implements I_ImageService {
     @Override
     public ImageModel uploadImage(MultipartFile file, Principal principal) throws IOException {
         User user = getUserByName(principal);
-        ImageModel imageModel = imageModelRepository.findByUserId(user.getId()).orElseThrow(UserExistExseption::new);
+        ImageModel imageModel = imageModelRepository.findByUserId(user.getId()).orElse(null);
         if (!ObjectUtils.isEmpty(imageModel)) {
             imageModelRepository.delete(imageModel);
-        }
+        } 
         ImageModel createdImageModel = new ImageModel();
         createdImageModel.setUserId(user.getId());
         createdImageModel.setName(file.getOriginalFilename());
         byte[] coded = compressBytes(file.getBytes());
         createdImageModel.setImageBytes(coded);
         return imageModelRepository.save(createdImageModel);
+        
     }
 
     @Override
-    public ImageModel uploadImageToPost(Long postId, Principal principal, MultipartFile file) {
+    public ImageModel uploadImageToPost(Long postId, Principal principal, MultipartFile file) throws IOException {
+        User user = getUserByName(principal);
+        Post post = user.getUserPosts().stream().filter((Post t) -> {
+            if (Long.compare(t.getId(), postId) == 0) {
+
+                return true;
+            } else {
+                return false;
+            }
+        }).collect(Collectors.collectingAndThen(Collectors.toList(), (List<Post> t) -> {
+            if (t.size() != 1) {
+                throw new IllegalStateException();
+            }
+            return t.get(0);
+        }));
+        ImageModel createdImageModel = new ImageModel();
+        createdImageModel.setUserId(user.getId());
+        createdImageModel.setName(file.getOriginalFilename());
+        byte[] compressBytes = compressBytes(file.getBytes());
+        createdImageModel.setImageBytes(compressBytes);
+        System.out.println("===============================");
+        return imageModelRepository.save(createdImageModel);
+//        imageRepositoryDAO.save(createdImageModel);
+//        return createdImageModel;
     }
 
     @Override
@@ -82,6 +115,11 @@ public class ImageService implements I_ImageService {
 
     @Override
     public ImageModel getImageFromPost(Long postId) {
+        ImageModel imageModel = imageModelRepository.findByPostId(postId).orElseThrow(ImageNotFoundException::new);
+        if (ObjectUtils.isEmpty(imageModel)) {
+            imageModel.setImageBytes(decompressBytes(imageModel.getImageBytes()));
+        }
+        return imageModel;
     }
 
     private User getUserByName(Principal principal) {
@@ -92,7 +130,7 @@ public class ImageService implements I_ImageService {
         return user;
     }
 
-    private byte[] compressBytes(byte[] bytes) {
+    private static byte[] compressBytes(byte[] bytes) {
         Deflater deflater = new Deflater();
         deflater.setInput(bytes);
         deflater.finish();
@@ -105,12 +143,13 @@ public class ImageService implements I_ImageService {
         try {
             byteArrayOutputStream.close();
         } catch (IOException ex) {
-            logger.warn(Arrays.toString(ex.getStackTrace()));
+            System.out.println("in catch deflater");
+//            logger.warn(Arrays.toString(ex.getStackTrace()));
         }
         return byteArrayOutputStream.toByteArray();
     }
 
-    private byte[] decompressBytes(byte[] bytes) {
+    private static byte[] decompressBytes(byte[] bytes) {
         Inflater inflater = new Inflater();
         inflater.setInput(bytes);
         byte[] buffer = new byte[1024];
@@ -122,7 +161,7 @@ public class ImageService implements I_ImageService {
             }
             return byteArrayOutputStream.toByteArray();
         } catch (IOException | DataFormatException ex) {
-            logger.warn(Arrays.toString(ex.getStackTrace()));
+//            logger.warn(Arrays.toString(ex.getStackTrace()));
             return buffer;
         }
     }

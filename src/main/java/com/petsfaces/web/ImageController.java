@@ -53,8 +53,13 @@ public class ImageController {
     }
 
     @PostMapping(value = "/{postId}/upload")
-    public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable Long postId, Principal principal, @RequestParam (value = "file")MultipartFile file) {
-        ImageModel imageModel = imageService.uploadImageToPost(postId, principal, file);
+    public ResponseEntity<MessageResponse> uploadImageToPost(@PathVariable Long postId, Principal principal, @RequestParam(value = "file") MultipartFile file) {
+        try {
+            ImageModel imageModel = imageService.uploadImageToPost(postId, principal, file);
+            System.out.println("5");
+        } catch (IOException ex) {
+            System.out.println("in catch");
+        }
         return new ResponseEntity<>(new MessageResponse("all is fine save image to post"), HttpStatus.OK);
     }
 

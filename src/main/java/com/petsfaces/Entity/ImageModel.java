@@ -39,9 +39,9 @@ public class ImageModel {
     private String name;
     @JsonIgnore
     private long userId;
-    @JsonIgnore
-    private long postId; 
-    @Lob
+    @JsonIgnore 
+    private long postId ; 
+//    @Lob
     @Column(columnDefinition = "Bytea")
-    private byte[] imageBytes;
+    private byte[]  imageBytes;
 }

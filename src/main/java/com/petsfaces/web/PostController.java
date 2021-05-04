@@ -88,7 +88,11 @@ public class PostController {
 
     @PostMapping(path = "/{postId}/delete")
     public ResponseEntity<MessageResponse> deletePost(@PathVariable(value = "postId") Long postId, Principal principal) {
+        try {
          postService.deletePost(postId, principal);
+        } catch (IllegalAccessError e) {
+           return new ResponseEntity<>(new MessageResponse("Illegal ACces"), HttpStatus.BAD_REQUEST);
+        }
 //        List<PostDTO> listPostDTO = postList.stream().map(postFacade::postToPostDTO).collect(Collectors.toList());
         return new ResponseEntity<>(new MessageResponse("post was deleted"), HttpStatus.OK);
     }
