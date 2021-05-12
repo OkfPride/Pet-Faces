@@ -13,6 +13,8 @@ import com.petsfaces.servises.UserService;
 import com.petsfaces.validators.ResponseErrorValidation;
 import java.security.Principal;
 import javax.validation.Valid;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -34,21 +36,19 @@ import org.springframework.web.bind.annotation.RestController;
 @CrossOrigin
 @RequestMapping("/api/user")
 public class UserController {
-
-//    @Autowired
+    
+    private static final Logger logger = LoggerFactory.getLogger(UserController.class);
     private IUserServise userService;
-//    @Autowired
     private ResponseErrorValidation responseErrorValidation;
-//    @Autowired
-//    @Autowired
-    UserFacade userFacade;
-
+    private UserFacade userFacade;
+    
     @Autowired
     public UserController(IUserServise userService, ResponseErrorValidation responseErrorValidation, UserFacade userFacade) {
         this.userService = userService;
         this.responseErrorValidation = responseErrorValidation;
         this.userFacade = userFacade;
     }
+    
     @PostMapping("/update")
     public ResponseEntity<Object> updateUser(@RequestBody @Valid UserDTO userDTO, Principal principal, BindingResult bindingResult) {
         ResponseEntity<Object> errors = responseErrorValidation.mapValidationService(bindingResult);
@@ -57,27 +57,28 @@ public class UserController {
         }
         User updatedUser = userService.updateUser(userDTO, principal);
         UserDTO updatedUserDTO = userFacade.userToUserDTO(updatedUser);
+        logger.info("User "+ updatedUserDTO +" is updated");
         return new ResponseEntity<>(updatedUserDTO, HttpStatus.OK);
     }
-
-    @GetMapping( value = "/{id}")
+    
+    @GetMapping(value = "/{id}")
     public ResponseEntity<UserDTO> getUser(@PathVariable(value = "id") String id) {
-        User userById =null;
-        UserDTO userDTO =  null;
+        User userById = null;
+        UserDTO userDTO = null;
         try {
-        userById = userService.getUserById(Long.parseLong(id));
+            userById = userService.getUserById(Long.parseLong(id));
         } catch (IllegalArgumentException e) {
-           return new ResponseEntity<>(userDTO, HttpStatus.NOT_FOUND);
+            return new ResponseEntity<>(userDTO, HttpStatus.NOT_FOUND);
         }
         userDTO = userFacade.userToUserDTO(userById);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
-
+    
     @GetMapping("/")
     public ResponseEntity<UserDTO> getCurrentUser(Principal principal) {
         User user = userService.getUserbyName(principal);
         UserDTO userDTO = userFacade.userToUserDTO(user);
         return new ResponseEntity<>(userDTO, HttpStatus.OK);
     }
-
+    
 }

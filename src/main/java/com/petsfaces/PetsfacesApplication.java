@@ -8,10 +8,6 @@ public class PetsfacesApplication {
 
 	public static void main(String[] args) {
 		SpringApplication.run(PetsfacesApplication.class, args);
-
-                System.out.println("version of conflict merge");
-          
-
 	}
 
 }
